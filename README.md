@@ -1,3 +1,6 @@
+# MLOps-Query
+To run, do `uv run -m src.main`
+
 # Initial plan
 
 Docker compose
