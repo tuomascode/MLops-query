@@ -8,14 +8,16 @@ import http
 
 app = FastAPI()
 
-PUNCTUATION = ('.', '!', '?')
+PUNCTUATION = (".", "!", "?")
 
 
 def check_punctuation(fact: str) -> bool:
     return fact.endswith(PUNCTUATION)
 
+
 def check_length(fact: str, expected_length: int) -> bool:
     return len(fact) == expected_length
+
 
 @app.get("/")
 async def main():
@@ -25,8 +27,8 @@ async def main():
         latency = time.monotonic() - start
 
         resp_json = resp.json()
-        fact = resp_json['fact']
-        length = resp_json['length']
+        fact = resp_json["fact"]
+        length = resp_json["length"]
 
         return APIResponse(
             latency=latency,
@@ -34,6 +36,7 @@ async def main():
             length_correct=check_length(fact, length),
             punctuation=check_punctuation(fact),
         ).model_dump()
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
