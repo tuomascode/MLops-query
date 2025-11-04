@@ -1,5 +1,5 @@
 [project]
-name = "mlops-query"
+name = "poller"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -9,9 +9,4 @@ dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.12.3",
     "uvicorn>=0.38.0",
-]
-
-[tool.uv.workspace]
-members = [
-    "services/poller",
 ]

@@ -1,13 +1,30 @@
 version: "3.8"
 
 services:
+  poller:
+    build:
+      context: ./services/poller
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - timescaledb
+    environment:
+      POSTGRES_HOST: timescaledb
+      POSTGRES_DB: metrics
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeme
+    volumes:
+      - ./services/poller:/app
+    ports:
+      - "12345:8000"
+
   timescaledb:
     image: timescale/timescaledb:latest-pg14
     environment:
       POSTGRES_PASSWORD: changeme
       POSTGRES_DB: metrics
     ports:
-      - "5432:5432"
+      - "12346:5432"
     volumes:
       - timescale-data:/var/lib/postgresql/data
 
@@ -23,3 +40,4 @@ services:
 
 volumes:
   timescale-data:
+    driver: local
