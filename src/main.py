@@ -20,11 +20,15 @@ async def main():
     async with httpx.AsyncClient() as client:
         resp = await client.get("https://catfact.ninja/fact")
         resp.raise_for_status()
+
+        resp_json = resp.json()
+        fact = resp_json['fact']
+        length = resp_json['length']
         return APIResponse(
             latency=0,
             failed_request=True,
-            length_correct=True,
-            punctuation=True,
+            length_correct=check_length(fact, length),
+            punctuation=check_punctuation(fact),
         ).model_dump_json()
 
 if __name__ == "__main__":
