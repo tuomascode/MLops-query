@@ -2,13 +2,14 @@ from fastapi import FastAPI
 import uvicorn
 import httpx
 
-from src.models import APIResponse
+from src.models import CatApiResponse, PollInstance
 import time
 import http
 
 app = FastAPI()
 
 PUNCTUATION = (".", "!", "?")
+POLL_TARGET = "https://catfact.ninja/fact"
 
 
 def check_punctuation(fact: str) -> bool:
@@ -19,23 +20,29 @@ def check_length(fact: str, expected_length: int) -> bool:
     return len(fact) == expected_length
 
 
-@app.get("/")
-async def main():
+async def poll() -> PollInstance:
     async with httpx.AsyncClient() as client:
         start = time.monotonic()
-        resp = await client.get("https://catfact.ninja/fact")
+        resp = await client.get(POLL_TARGET)
         latency = time.monotonic() - start
 
         resp_json = resp.json()
         fact = resp_json["fact"]
         length = resp_json["length"]
 
-        return APIResponse(
+        return PollInstance(
+            timestamp=time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()),
             latency=latency,
             failed_request=resp.status_code != http.HTTPStatus.OK,
             length_correct=check_length(fact, length),
             punctuation=check_punctuation(fact),
-        ).model_dump()
+            api_response=CatApiResponse(fact=fact, length=length),
+        )
+
+
+@app.get("/")
+async def main():
+    return
 
 
 if __name__ == "__main__":
