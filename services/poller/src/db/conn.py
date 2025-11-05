@@ -1,5 +1,5 @@
 from functools import cache
-import psycopg2
+from sqlalchemy import create_engine
 
 TABLE_NAME = "cat_api_data"
 
@@ -11,10 +11,7 @@ DB_PASS = "changeme"
 
 @cache
 def get_db_conn():
-    return psycopg2.connect(
-        dbname=DB_NAME,
-        user=DB_USERNAME,
-        host=DB_HOST,
-        password=DB_PASS,
-        port=DB_PORT,
+    engine = create_engine(
+        f"postgresql+psycopg2://{DB_USERNAME}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
+    return engine.connect()
