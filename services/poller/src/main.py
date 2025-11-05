@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 import httpx
 
-from services.poller.src.models import CatApiResponse, PollInstance
+from src.models import CatApiResponse, PollInstance
 import time
 import http
 
@@ -31,7 +31,10 @@ async def poll() -> PollInstance:
         length = resp_json["length"]
 
         ts = time.time()
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ts)) + f".{int((ts - int(ts)) * 1000):03d}"
+        timestamp = (
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(ts))
+            + f".{int((ts - int(ts)) * 1000):03d}"
+        )
         return PollInstance(
             timestamp=timestamp,
             latency=latency,
