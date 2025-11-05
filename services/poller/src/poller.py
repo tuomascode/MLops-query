@@ -1,8 +1,11 @@
 import httpx
 
-from src.modelsmodels import CatApiResponse, PollInstance
+from src.models import CatApiResponse, PollInstance
 import time
 import http
+
+PUNCTUATION = (".", "!", "?")
+POLL_TARGET = "https://catfact.ninja/fact"
 
 
 def check_punctuation(fact: str) -> bool:

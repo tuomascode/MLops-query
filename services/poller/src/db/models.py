@@ -1,8 +1,10 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, Text
 from sqlalchemy.ext.declarative import declarative_base
-from src.db.conn import TABLE_NAME
+
+TABLE_NAME = "cat_api_data"
 
 Base = declarative_base()
+
 
 class PollInstance(Base):
     __tablename__ = TABLE_NAME

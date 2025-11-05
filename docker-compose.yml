@@ -5,34 +5,29 @@ services:
     build:
       context: ./services/poller
       dockerfile: Dockerfile
+    network_mode: "host"
     restart: unless-stopped
     depends_on:
       - timescaledb
     environment:
-      POSTGRES_HOST: timescaledb
-      POSTGRES_DB: metrics
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: "12346"
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: changeme
     volumes:
       - ./services/poller:/app
-    ports:
-      - "12345:8000"
 
   timescaledb:
     image: timescale/timescaledb:latest-pg14
     environment:
       POSTGRES_PASSWORD: changeme
-      POSTGRES_DB: metrics
+      POSTGRES_DB: postgres
     ports:
       - "12346:5432"
+    restart: unless-stopped
+    volumes:
+      - timescaledb-data:/var/lib/postgresql/data
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@local
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "8080:80"
-    depends_on:
-      - timescaledb
-
+volumes:
+  timescaledb-data:

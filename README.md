@@ -1,5 +1,5 @@
 # MLOps-Query
-To run, do `uv run -m src.main`
+To run, do `uv run -m main`
 
 # Initial plan
 
