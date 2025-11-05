@@ -1,3 +1,8 @@
-Generic single-database configuration.
+# Alembic
+Alembic is a simple database migration software. To create a migration
 
-https://alembic.sqlalchemy.org/en/latest/tutorial.html#the-migration-environment
+1) make changes to `src/db/models.py`
+2) make sure db is up to date: `uv run alembic upgrade head`
+3) run `uv run alembic revision --autogenerate -m "<some_camel_case_message>"`
+
+Then, to apply migration, run 

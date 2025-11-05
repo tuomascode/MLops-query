@@ -13,3 +13,16 @@ class PollInstance(BaseModel):
     length_correct: bool
     punctuation: bool
     api_response: CatApiResponse
+
+
+class TimeseriesAPIObject(BaseModel):
+    timestamp: str
+    latency: float
+    failed_request: bool
+    length_correct: bool
+    punctuation: bool
+    api_response: CatApiResponse
+
+
+class TimeseriesAPIResponse(BaseModel):
+    response: list[TimeseriesAPIObject]

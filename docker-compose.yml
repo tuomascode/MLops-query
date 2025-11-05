@@ -25,8 +25,6 @@ services:
       POSTGRES_DB: metrics
     ports:
       - "12346:5432"
-    volumes:
-      - timescale-data:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
@@ -38,6 +36,3 @@ services:
     depends_on:
       - timescaledb
 
-volumes:
-  timescale-data:
-    driver: local
