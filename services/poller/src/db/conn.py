@@ -15,6 +15,8 @@ DB_NAME = os.getenv("POSTGRES_DB", "postgres")
 DB_USERNAME = os.getenv("POSTGRES_USER", "postgres")
 DB_PASS = os.getenv("POSTGRES_PASSWORD", "changeme")
 
+API_LIMIT = 10**5
+
 
 @cache
 def get_db_conn() -> Any:
@@ -41,7 +43,7 @@ def poll_instance_to_db(poll_instance: PollInstance):
 
 def fetch_api_response() -> TimeseriesAPIResponse:
     conn = get_db_conn()
-    stmt = select(DBPollInstance).order_by(DBPollInstance.timestamp.asc())
+    stmt = select(DBPollInstance).order_by(DBPollInstance.timestamp.asc()).limit(API_LIMIT)
     rows = conn.execute(stmt).mappings().all()
 
     instances = []
