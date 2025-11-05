@@ -1,5 +1,24 @@
 # MLOps-Query
-To run, do `uv run -m main`
+To run the project, follow these steps
+
+
+Set up your timescale database
+```sh
+docker compose up timescaledb
+uv run alembic upgrade head
+```
+
+Then, while this is running, start polling with the backend
+```sh
+docker compose up poller
+```
+
+Now, you should be able to access the output at port 8000 with
+
+```sh
+curl http://localhost:8000
+```
+
 
 # Initial plan
 
