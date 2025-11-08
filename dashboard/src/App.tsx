@@ -7,7 +7,7 @@ import {
 } from "recharts";
 import dayjs from "dayjs";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+
 
 interface ApiResponse {
   fact: string;
@@ -24,6 +24,7 @@ interface TimeseriesAPIObject {
 }
 
 
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 export default function App() {
   const [data, setData] = useState<TimeseriesAPIObject[]>([]);
 
