@@ -98,3 +98,7 @@ credentials.json
 *.egg
 pip-wheel-metadata/
 node_modules/  # if you have a frontend in the repo
+
+# NPM
+
+*node_modules*

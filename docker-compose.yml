@@ -1,23 +1,6 @@
 version: "3.8"
 
 services:
-  poller:
-    build:
-      context: ./services/poller
-      dockerfile: Dockerfile
-    network_mode: "host"
-    restart: unless-stopped
-    depends_on:
-      - timescaledb
-    environment:
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: "12346"
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: changeme
-    volumes:
-      - ./services/poller:/app
-
   timescaledb:
     image: timescale/timescaledb:latest-pg14
     environment:
@@ -28,6 +11,58 @@ services:
     restart: unless-stopped
     volumes:
       - timescaledb-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build:
+      context: ./services/poller
+      dockerfile: Dockerfile
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:changeme@timescaledb:5432/postgres
+    volumes:
+      - ./services/poller:/app
+      - ./migrate-logs:/app/logs
+    command: >
+      sh -c "uv run alembic upgrade head"
+    restart: "no"
+
+  poller:
+    build:
+      context: ./services/poller
+      dockerfile: Dockerfile
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      POSTGRES_HOST: timescaledb
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeme
+    volumes:
+      - ./services/poller:/app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"    
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    depends_on:
+      - poller
+    environment:
+      VITE_API_URL: http://poller:8000
+    ports:
+      - "5173:80"
+    restart: unless-stopped
 
 volumes:
   timescaledb-data:

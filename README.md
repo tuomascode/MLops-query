@@ -5,6 +5,7 @@ To run the project, follow these steps
 Set up your timescale database
 ```sh
 docker compose up timescaledb
+cd services/poller/
 uv run alembic upgrade head
 ```
 
@@ -29,4 +30,7 @@ Multiple containers dealing with different responsibilities
 1. api query container
     * return json with all relevant data
 2. DB container
-3. Dashboard container
+3. Dashboard
+    1. Valikko
+        Aika valinta
+    2. graapheja
